@@ -1,2 +1,2 @@
 int add(const char* input){
-  throw "NotImplemented";}
+  return -1;}
