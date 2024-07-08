@@ -1,8 +1,11 @@
-int add(const char* input) {
-    // Check if the input string is empty
-    if (input[0] == '\0') {
-        return 0;
-    } else {
-        return -1;
-    }
-}
+#ifndef STRINGCALCULATOR_H
+#define STRINGCALCULATOR_H
+
+#include <string>
+
+class StringCalculator {
+public:
+    int add(const std::string& input);
+};
+
+#endif // STRINGCALCULATOR_H
