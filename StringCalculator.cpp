@@ -37,7 +37,6 @@ void FindNegatives(const std::string& updatedinput)
     std::string segment;
 
     while (std::getline(strstream, segment, ',')) {
-        //int number = std::stoi(segment);
         if (std::stoi(segment) < 0) 
         {
         throw std::runtime_error("negatives not allowed");
