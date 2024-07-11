@@ -1,51 +1,80 @@
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <vector>
+#include <algorithm>
 #include "StringCalculator.h"
 
-int StringCalculator::addofnum(const std::string& input) {
-    std::istringstream stream(input);
-    std::string number;
+std::string ReplaceWithCommas(const std::string& input, const std::string& delimiter)
+{
+    std::string numbersStr = input;
+    // Replace delimiter characters and newlines with commas
+    std::replace_if(numbersStr.begin(), numbersStr.end(), [&](char c) {
+        return c == '\n' || delimiter.find(c) != std::string::npos;
+    }, ',');
+    return numbersStr;
+}
+
+std::string FindDelimeter(const std::string& input)
+{
+    // Determine delimiter and numbers part
+    std::string delimiter = ",";
+    std::string numbersStr = input;
+
+    // Check if there's a custom delimiter specified
+    if (input.substr(0, 2) == "//") {
+        size_t delimiterPos = input.find("\n");
+        if (delimiterPos != std::string::npos) {
+            delimiter = input.substr(2, delimiterPos - 2);
+            numbersStr = input.substr(delimiterPos + 1);
+        }
+    }
+    numbersStr = ReplaceWithCommas(numbersStr, delimiter);
+    return numbersStr;
+}
+void FindNegatives(const std::string& updatedinput)
+{
+    std::stringstream strstream(updatedinput);
+    std::string segment;
+
+    while (std::getline(strstream, segment, ',')) {
+        //int number = std::stoi(segment);
+        if (std::stoi(segment) < 0) 
+        {
+        throw std::runtime_error("negatives not allowed");
+        }
+    }
+}
+
+int FindSum(const std::string& updatedinput)
+{
+    // Creating a stringstream
+    std::stringstream strstream(updatedinput);
+    std::string segment;
     int sum = 0;
-    while (std::getline(stream, number, ',')) {
-        int num = std::stoi(number);
-        if (num <= 1000) {
-            sum += num;
+
+    while (std::getline(strstream, segment, ',')) {
+        int number = std::stoi(segment);
+        if (number <= 1000) {
+            sum += number;
         }
     }
     return sum;
 }
 
-void StringCalculator::verify_NegativeNum(const std::string& input) {
-    std::istringstream stream(input);
-    std::string number;
-    while (std::getline(stream, number, ',')) {
-        if (std::stoi(number) < 0) {
-            throw std::runtime_error("Negative numbers not allowed");
-        }
-    }
-}
-
-int StringCalculator::add(const std::string& input) {
-    if (input.empty()) {
+int StringCalculator::add(const std::string& input) 
+{
+  if (input.empty()) {
         return 0;
     }
+    std::string updatedinput = FindDelimeter(input);
 
-    std::string filteredinput = newlinecheck(input);
-    filteredinput = normalizeDelimiters(filteredinput);
-    verify_NegativeNum(filteredinput);
-    return addofnum(filteredinput);
-}
+    // Replace delimiter and newlines with commas for easy splitting
+    //std::string updatedinput = ReplaceWithCommas(input,delimiter);
 
-std::string StringCalculator::normalizeDelimiters(const std::string& input) {
-    std::string result = input;
-    std::replace(result.begin(), result.end(), '\n', ',');
-    return result;
-}
+    int sum = FindSum(updatedinput);
+    
+    FindNegatives(updatedinput);
 
-std::string StringCalculator::newlinecheck(const std::string& input) {
-    if (input.substr(0, 2) == "//") {
-        std::string delimiter = input.substr(2, input.find('\n') - 2);
-        std::string rest = input.substr(input.find('\n') + 1);
-        std::replace(rest.begin(), rest.end(), delimiter[0], ',');
-        return rest;
-    }
-    return input;
+    return sum;
 }
