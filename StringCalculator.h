@@ -1,11 +1,8 @@
-#ifndef STRINGCALCULATOR_H
-#define STRINGCALCULATOR_H
+int add(const char* input)
+{
+   if(*input == '\0')
+  {
+   return 0;
+  }
 
-#include <string>
-
-class StringCalculator {
-public:
-    int add(const std::string& input);
-};
-
-#endif // STRINGCALCULATOR_H
+}
