@@ -62,3 +62,19 @@ TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter) {
 
     ASSERT_EQ(result, expectedresult);
 }
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterOfAnyLength) {
+    int expectedresult = 6;
+    std::string input = "//[***]\n1***2***3";
+    StringCalculator objUnderTest;
+    int result = objUnderTest.add(input);
+
+    ASSERT_EQ(result, expectedresult);
+}
+
+TEST(StringCalculatorAddTests, ExpectExceptionForMultipleNegativeNumbers) {
+    ASSERT_THROW({
+        std::string input = "-1,-2,3";
+        StringCalculator objUnderTest;
+        objUnderTest.add(input);
+    }, std::runtime_error);
+}
