@@ -1,7 +1,4 @@
-
 #include "StringCalculator.h"
-#include <sstream>
-#include <regex>
 
 int StringCalculator::add(const std::string& numbers) {
     if (numbers.empty()) {
