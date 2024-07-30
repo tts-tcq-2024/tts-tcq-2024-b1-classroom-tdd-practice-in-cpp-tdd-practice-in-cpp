@@ -1,22 +1,15 @@
-#ifndef STRING_CALCULATOR_H
-#define STRING_CALCULATOR_H
-
+#ifndef STRINGCALCULATOR_H
+#define STRINGCALCULATOR_H
+ 
 #include <string>
-#include <vector>
-#include <stdexcept>
-#include <sstream>
-#include <regex>
-
+ 
 class StringCalculator {
 public:
-    int add(const std::string& numbers);
-
-private:
-    bool isCustomDelimiter(const std::string& numbers);
-    void parseCustomDelimiter(const std::string& numbers, std::string& delimiters, std::string& numbersWithoutDelimiters);
-    std::vector<int> split(const std::string& str, const std::string& delimiters);
-    int calculateSum(const std::vector<int>& nums);
-    void throwNegativeNumbersException(const std::vector<int>& negativeNumbers);
+    int add(const std::string& input);
+    int addofnum(const std::string& input);
+    void verify_NegativeNum(const std::string& input);
+    std::string normalizeDelimiters(const std::string& input);
+    std::string newlinecheck(const std::string& input);   
 };
-
-#endif // STRING_CALCULATOR_H
+ 
+#endif
