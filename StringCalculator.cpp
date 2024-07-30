@@ -1,77 +1,57 @@
 #include "StringCalculator.h"
-
-int StringCalculator::add(const std::string& numbers) {
-    if (numbers.empty()) {
-        return 0;
-    }
-    
-    std::string delimiters = ",\n";
-    std::string numbersWithoutDelimiters = numbers;
-
-    if (isCustomDelimiter(numbers)) {
-        parseCustomDelimiter(numbers, delimiters, numbersWithoutDelimiters);
-    }
-
-    std::vector<int> nums = split(numbersWithoutDelimiters, delimiters);
-    return calculateSum(nums);
-}
-
-bool StringCalculator::isCustomDelimiter(const std::string& numbers) {
-    return numbers.substr(0, 2) == "//";
-}
-
-void StringCalculator::parseCustomDelimiter(const std::string& numbers, std::string& delimiters, std::string& numbersWithoutDelimiters) {
-    size_t delimiterEnd = numbers.find('\n');
-    if (numbers[2] == '[' && numbers[delimiterEnd - 1] == ']') {
-        delimiters += numbers.substr(3, delimiterEnd - 4);
-    } else {
-        delimiters += numbers.substr(2, delimiterEnd - 2);
-    }
-    numbersWithoutDelimiters = numbers.substr(delimiterEnd + 1);
-}
-
-std::vector<int> StringCalculator::split(const std::string& str, const std::string& delimiters) {
-    std::vector<int> result;
-    std::regex delimiterRegex("[" + delimiters + "]+");
-    std::sregex_token_iterator iter(str.begin(), str.end(), delimiterRegex, -1);
-    std::sregex_token_iterator end;
-    while (iter != end) {
-        if (!iter->str().empty()) {
-            result.push_back(std::stoi(iter->str()));
-        }
-        ++iter;
-    }
-    return result;
-}
-
-int StringCalculator::calculateSum(const std::vector<int>& nums) {
+#include <sstream>
+#include <algorithm>
+ 
+ 
+int StringCalculator::addofnum(const std::string& input) {
+    std::istringstream stream(input);
+    std::string number;
     int sum = 0;
-    std::vector<int> negativeNumbers;
-
-    for (int num : nums) {
-        if (num < 0) {
-            negativeNumbers.push_back(num);
-        }
-        if (num <= 1000) {
-            sum += num;
+    while (std::getline(stream, number, ',')) {
+        int num = std::stoi(number);
+        if (num <=1000) {
+         sum += num;
         }
     }
-
-    if (!negativeNumbers.empty()) {
-        throwNegativeNumbersException(negativeNumbers);
-    }
-
     return sum;
 }
-
-void StringCalculator::throwNegativeNumbersException(const std::vector<int>& negativeNumbers) {
-    std::ostringstream oss;
-    oss << "Negatives not allowed: ";
-    for (size_t i = 0; i < negativeNumbers.size(); ++i) {
-        if (i > 0) {
-            oss << ", ";
+ 
+void StringCalculator::verify_NegativeNum(const std::string& input) {
+    std::istringstream stream(input);
+    std::string number;
+    while (std::getline(stream, number, ',')) {
+        if (std::stoi(number) < 0) {
+            throw std::runtime_error("Negative numbers not allowed");
         }
-        oss << negativeNumbers[i];
     }
-    throw std::runtime_error(oss.str());
+}
+ 
+int StringCalculator::add(const std::string& input) {
+  if (input.empty()) {
+        return 0;
+    }
+   if (input == "0") {
+        return 0;
+    }
+ 
+  std::string filteredinput = newlinecheck(input);
+  filteredinput = normalizeDelimiters(filteredinput);
+  verify_NegativeNum(filteredinput);
+  return addofnum(filteredinput);  
+}
+ 
+std::string StringCalculator::normalizeDelimiters(const std::string& input) {
+    std::string result = input;
+    std::replace(result.begin(), result.end(), '\n', ',');
+    return result;
+}
+ 
+std::string StringCalculator::newlinecheck(const std::string& input) {
+    if (input.substr(0, 2) == "//") {
+        std::string delimiter = input.substr(2, input.find('\n') - 2);
+        std::string rest = input.substr(input.find('\n') + 1);
+        std::replace(rest.begin(), rest.end(), delimiter[0], ',');
+        return rest;
+    }
+    return input;
 }
