@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <sstream>
+#include <regex>
 
 class StringCalculator {
 public:
@@ -18,4 +20,3 @@ private:
 };
 
 #endif // STRING_CALCULATOR_H
-
